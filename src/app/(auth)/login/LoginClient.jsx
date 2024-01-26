@@ -15,6 +15,7 @@ import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
+  signInWithRedirect,
 } from 'firebase/auth';
 import { auth } from '@/firebase/firebase';
 
@@ -48,7 +49,7 @@ const LoginClient = () => {
 
   const signWithGoogle = () => {
     const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider)
+    signInWithRedirect(auth, provider)
       .then((result) => {
         toast.success('로그인에 성공했습니다.');
         redirectUser();
