@@ -4,13 +4,19 @@ import Image from 'next/image';
 import LogoPath from '@/assets/colorful.svg';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-
 import styles from './Auth.module.scss';
 import Loader from '@/components/loader/Loader';
 import Input from '@/components/input/Input';
 import AutoSignInCheckbox from '@/components/autoSignInCheckbox/AutoSignInCheckbox';
 import Divider from '@/components/divider/Divider';
 import Button from '@/components/button/Button';
+import { toast } from 'react-toastify';
+import {
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from 'firebase/auth';
+import { auth } from '@/firebase/firebase';
 
 const LoginClient = () => {
   const [email, setEmail] = useState('');
@@ -27,9 +33,30 @@ const LoginClient = () => {
   const loginUser = (e) => {
     e.preventDefault();
     setIsLoading(true);
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredentials) => {
+        setIsLoading(false);
+        toast.success('로그인에 성공했습니다.');
+        redirectUser();
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        toast.error(error.message);
+      });
   };
 
-  const signWithGoogle = () => {};
+  const signWithGoogle = () => {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        toast.success('로그인에 성공했습니다.');
+        redirectUser();
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  };
 
   return (
     <>
